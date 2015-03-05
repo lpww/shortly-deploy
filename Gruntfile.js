@@ -83,8 +83,8 @@ module.exports = function(grunt) {
       prodServer: {
         command: [
           'git add .',
-          'git status',
-          'git commit -m "uploading website"'
+          'git commit -m "uploading website"',
+          'git push azure master'
           ].join('&&')
       }
     },
