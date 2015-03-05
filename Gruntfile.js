@@ -77,6 +77,7 @@ module.exports = function(grunt) {
     shell: {
       prodServer: {
         command: [
+          'git remote add azure https://lpww@krtt.scm.azurewebsites.net:443/krtt.git',
           'git add .',
           'git commit -m "push to azure"',
           'git push azure master'
