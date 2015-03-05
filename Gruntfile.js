@@ -8,7 +8,7 @@ module.exports = function(grunt) {
         src: [
           './public/**/*.js',
         ],
-        dest: 'build/js/production.js',
+        dest: 'public/dist/production.js',
       }
     },
 
@@ -29,19 +29,17 @@ module.exports = function(grunt) {
 
     uglify: {
       build: {
-        src: 'build/js/production.js',
-        dest: 'build/js/production.min.js'
+        src: 'public/dist/production.js',
+        dest: 'public/dist/production.min.js'
       }
     },
 
     jshint: {
       files: [
         './**/*.js',
-        '!./build/js/*.js',
         '!./node_modules/**/*'
       ],
       options: {
-        force: 'false',
         jshintrc: '.jshintrc',
         ignores: [
           'public/lib/**/*.js',
@@ -53,11 +51,8 @@ module.exports = function(grunt) {
     cssmin: {
       target: {
         files: [{
-          expand: true,
-          cwd: './public',
-          src: ['*.css', '!build/css/*.min.css'],
-          dest: './build/css',
-          ext: '.min.css'
+          src: 'public/style.css',
+          dest: 'public/dist/style.min.css'
         }]
       }
     },
@@ -83,9 +78,9 @@ module.exports = function(grunt) {
       prodServer: {
         command: [
           'git add .',
-          'git commit -m "uploading website"',
+          'git commit -m "push to azure"',
           'git push azure master'
-          ].join('&&')
+        ].join('&&')
       }
     },
   });
@@ -126,27 +121,25 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
-    'test',
+    'jshint',
+    'mochaTest',
     'concat',
     'uglify',
     'cssmin'
   ]);
 
-  grunt.registerTask('upload', function(n) {
+  grunt.registerTask('deploy', function(n) {
     if(grunt.option('prod')) {
       grunt.task.run([
         'build',
         'shell'
       ]);
     } else {
-      grunt.task.run([ 'server-dev' ]);
+      grunt.task.run([
+        'build',
+        'nodemon'
+      ]);
     }
   });
-
-  grunt.registerTask('deploy', [
-    'upload',
-    'nodemon'
-  ]);
-
 
 };
